@@ -2,7 +2,7 @@
 
 Спецификация для общих алгебраических типов в JavaScript на основе [Fantasy Land](https://github.com/devSchacht/fantasy-land).
 
-* [Specification](docs/spec.md)
+* [Спецификация](docs/spec.md)
 
 ### Отличие от Fantasy Land
 
