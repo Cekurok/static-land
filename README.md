@@ -1,21 +1,17 @@
 # <img width="80" height="50" src="./logo/logo.png" /> Static Land
 
-Specification for common algebraic types in JavaScript
-based on [Fantasy Land](https://github.com/fantasyland/fantasy-land).
+Спецификация для общих алгебраических типов в JavaScript на основе [Fantasy Land](https://github.com/devSchacht/fantasy-land).
 
 * [Specification](docs/spec.md)
 
-### Difference from Fantasy Land
+### Отличие от Fantasy Land
 
-Fantasy Land uses methods as a base for types. A type instance in Fantasy Land
-is an object with certain methods. For example a Functor type instance must be an object
-that has a `map` method.
+Fantasy Land использует методы как основу для типов. Экземпляр типа в Fantasy Land
+это объект с определенными методами. Например, экземпляр типа Functor должен быть объектом, у которого есть метод `map`.
 
-In Static Land a type is just a collection of static functions, and instances
-of a type can be any values, including primitives (Number, Boolean, etc.)
+В Static Land тип — просто набор статических функций и экземпляром типа может быть любое значение, в том числе примитивы (Number, Boolean, и т.д.)
 
-For example we can implement an Addition type that uses numbers as its instances
-and satisfies the Monoid laws:
+Например, мы можем реализовать тип Addition, который используечт числа как экземпляры и удовлетворяет закону моноид:
 
 ```js
 const Addition = {
@@ -31,34 +27,27 @@ const Addition = {
 }
 ```
 
-#### Pros
+#### Плюсы
 
-  - No name clashes. Since a type is just a collection of functions that don't
-    share any namespace we don't have problems with name clashes.
-  - We can implement many types for same values. For example we can implement
-    two Monoids for numbers: Addition and Multiplication.
-  - We can implement types with primitives (Number, Boolean, etc.) as values.
-  - We can implement seamless types. For example we can make a type with
-    arrays as values, and user won't have to wrap/unwrap values to some
-    wrapper class with Fantasy Land methods.
+  - Нет конфликтов имен. Поскольку тип — это просто набор функций, которые не имеют общих имен, у нас нет проблем с совпадением имен.
+  - Мы можем реализовать много типов для того же значения. Например, мы можем реализовать два Monoid'a для чисел: Addition и Multiplication.
+  - Мы можем рализовать тип со значением в виде примитива (Number, Boolean, и т.д.).
+  - Мы можем рализовать бесшовный тип. Например, мы можем реализовать тип со значением в виде массива и пользователю не надо будет оборачивать/разворачивать значения в классы обёртки с методавми Fantasy Land.
 
-#### Cons
+#### Минусы
 
-  - We have to pass around types more often.
-    In Fantasy Land some generic code can be written using only methods,
-    we have to pass types only for `of` and `empty`. In Static Land we have
-    to pass types for any generic code.
+  - Нам прийдётся пробрасывать типы чаще. В Fantasy Land какой-то обычный код может быть написан с использованием только методов, мы должны прокинуть только `of` и `empty`. В Static Land мы должны прокидывать типы для любого кода.
 
-### How to add compatibility with Static Land to your library
+### Как добавить совместимость с Static Land для вашей библиотеки
 
-Simply expose some [Type Objects](docs/spec.md#type) that work with types that your library provides or with types defined in another library or with native types like Array.
+Просто раскройте некоторые [Типы](docs/spec.md#type), которые работают с типами, которые предоставляет ваша библиотека или с типами объявленными в другой библиотеке или с нативными типам, такими как Array.
 
-Type Objects don't have to be simple JavaScript objects; they can also be constructors if desired. The only requirements are:
+Тип не должны быть простыми объектами JavaScript; они также могут быть конструкторами при желании. Единственным требованием является:
 
-- this object contains some static methods from Static Land; and
-- if it contains a method with one of the names that Static Land reserves, that method must be a Static Land method (obey laws etc.).
+- этот объект содержит несколько статических методов из Static Land; и
+- если он содержит метод с именем как в Static Land, то этот метод должен быть методом Static Land (подчиняясь закону и т.д.).
 
-#### Example 1. Static Land type for Array
+#### Пример 1. Тип Static Land для Array
 
 ```js
 const SArray = {
@@ -80,7 +69,7 @@ const SArray = {
 export {SArray}
 ```
 
-#### Example 2. Static Land type as a Class
+#### Пример 2. Тип Static Land как Class
 
 ```js
 class MyType = {
@@ -113,34 +102,34 @@ class MyType = {
 export {MyType}
 ```
 
-### Compatible libraries
+### Совместимые библиотеки
 
-We have a list in the wiki. Feel free to add your library there.
+У нас есть список в вики. Не стесняйтесь добавлять туда свою библиотеку.
 
-- [Compatible libraries](https://github.com/rpominov/static-land/wiki/Compatible-libraries)
+- [Совместимые библиотеки](https://github.com/rpominov/static-land/wiki/Compatible-libraries)
 
 
-## Utils [![Build Status](https://travis-ci.org/rpominov/static-land.svg?branch=master)](https://travis-ci.org/rpominov/static-land) [![Coverage Status](https://coveralls.io/repos/github/rpominov/static-land/badge.svg?branch=master)](https://coveralls.io/github/rpominov/static-land?branch=master)
+## Утилиты [![Build Status](https://travis-ci.org/rpominov/static-land.svg?branch=master)](https://travis-ci.org/rpominov/static-land) [![Coverage Status](https://coveralls.io/repos/github/rpominov/static-land/badge.svg?branch=master)](https://coveralls.io/github/rpominov/static-land?branch=master)
 
-We also have `static-land` package on npm that provides some useful utilities (not many at the moment).
+У нас также есть пакет `static-land` в npm, который предоставляет некоторые полезные утилиты (не много на данный момент).
 
-* [API reference](docs/API.md)
+* [Справочник по API](docs/API.md)
 
-### Installation
+### Установка
 
 ```console
 npm install static-land
 ```
 
 ```js
-// modern JavaScript
+// современный JavaScript
 import {fromFLType} from 'static-land'
 
-// classic JavaScript
+// классический JavaScript
 var fromFLType = require('static-land').fromFLType
 ```
 
-Or using CDN:
+Или используя CDN:
 
 ```html
 <script src="https://unpkg.com/static-land/umd/staticLand.js"></script>
@@ -149,10 +138,10 @@ Or using CDN:
 </script>
 ```
 
-### Development
+### Разработка
 
 ```console
 npm run lobot -- --help
 ```
 
-Run [lobot](https://github.com/rpominov/lobot) commands as `npm run lobot -- args...`.
+Выполняйте команды [lobot](https://github.com/rpominov/lobot) так `npm run lobot -- args...`.
