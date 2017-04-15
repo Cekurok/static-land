@@ -25,7 +25,7 @@ map(x => x + 1, of(41)) // MyType(42)
 map :: Functor f => Type f ~> (a → b, f a) → f b
 ```
 
-Мы используем синтаксис похожий на Хаскель. Вы можете узнать о нём из [вики Ramda'ы](https://github.com/ramda/ramda/wiki/Type-Signatures) или из книги ["Professor Frisby's Mostly Adequate Guide to Functional Programming"](https://drboolean.gitbooks.io/mostly-adequate-guide/content/ch7.html).
+Мы используем синтаксис похожий на Хаскель. Вы можете узнать о нём из [вики Ramda'ы](https://github.com/ramda/ramda/wiki/Type-Signatures) или из книги ["В основном адекватное руководство профессора Фрисби по функциональному программированию"](https://github.com/MostlyAdequate/mostly-adequate-guide-ru/blob/master/ch7-ru.md).
 
 Эта спецификация использует расширения для синтаксиса описания типов:
 
