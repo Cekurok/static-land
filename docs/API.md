@@ -2,7 +2,7 @@
 
 `(FLType[, listOfMethodsThatShouldBeGenerated]) → TypeObject`
 
-Given a Fantasy Land compatible type creates a Static Land type for it.
+Полчает тип Fantasy Land — возвращает тип для Static Land.
 
 ```js
 import {fromFLType} from 'static-land'
@@ -18,13 +18,9 @@ Id.map(x => x + 41, Id.of(1)) // IdFL(42)
 
 `(TypeObject, generator) → typeValue`
 
-This is something like [Haskell's do notation](https://en.wikibooks.org/wiki/Haskell/do_notation)
-for Static Land monads based on
-[generators](https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Iterators_and_Generators).
+Что-то типа [вызова do в Хаскеле](https://en.wikibooks.org/wiki/Haskell/do_notation) для монад Static Land основанных на [генераторах](https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/Iterators_and_Generators).
 
-`TypeObject` must implement [ChainRec](./spec.md#chainrec) or [Chain](./spec.md#chain). 
-If `ChainRec` available you can use loops with big number of iterations in the generator. 
-The `generator` function must `yield` and `return` values that `TypeObject` uses as its values.
+`TypeObject` должен реализовать [ChainRec](./spec.md#chainrec) или [Chain](./spec.md#chain). Если `ChainRec` доступен, вы можете цикл с большим количеством итераций в генераторе. Функция `generator` должна `yield` и `return` значения, которые `TypeObject` использует как значения.
 
 ```js
 import {runGenerator} from 'static-land'
@@ -53,12 +49,6 @@ runGenerator(List, function*() {
 }) // -> [2, 6]
 ```
 
-Keep in mind that for monads that represent several values (like List or Observable)
-the `generator` function may be executed several times, so make sure it's pure.
-For one-or-less-value Monads (like Future or Maybe) it's safe to assume that `generator` function
-executed only once.
+Имейте в виду, что для монад, которые представляют несколько значений (например, List или Observable) функция `generator` может быть выполнена несколько раз, так что убедитесь, что она чистая. Для монад с оним и меньше значений (например, Future или Maybe) можно с уверенностью предположить, что функция `generator` выполняется только один раз.
 
-Warning: Because of the way JavaScript generators work it's hard to implement `runGenerator()`
-that is at same time work for any monad and resource efficient. 
-This implementation may consume a lot of memory and processor resources in some cases. 
-It's recommended to use it only for educational purposes, and to not use it in real-world programs.
+Предупреждение: из-за того как работают генераторы в JavaScript, сложно реализовать `runGenerator()`, которая одновременно работает для любой монады и эффективна по ресурсам. Эта реализация может потреблять много памяти и ресурсов процессора, в некоторых случаях. Рекомендуется использовать её только для образовательных целей и не использовать ее в реальных программах. 
