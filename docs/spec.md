@@ -86,33 +86,27 @@ Maybe.map = (f, v) => {
 ```
 
 
-## Equivalence
+## Эквивалентность
 
-An appropriate definition of equivalence for the given value should ensure
-that the two values can be safely swapped out in a program that respects abstractions.
+Эквивалентности для данного значения должна соответствоавать определению, что два значения могут быть безопасно поменяны местами в программе, что подтверждает абстракцию.
 
-For example:
+Например:
 
- - Two lists are equivalent if they are equivalent at all indices.
- - Two plain old JavaScript objects, interpreted as dictionaries,
-   are equivalent when they are equivalent for all keys.
- - Two promises are equivalent when they yield equivalent values.
- - Two functions are equivalent if they yield equivalent outputs for equivalent inputs.
+ - Два списка эквивалентны, если они эквивалентны по всем показателям.
+ - Два обычных JavaScript объекта, представленные как словари, эквивалентны, когда они эквивалентны по всем ключам.
+ - Два промиса эквивалентны, когда они возвращают эквивалентные значения.
+ - Две функции эквивалентны, если они дают эквивалентные результаты для эквивалентных входных данных.
 
-We use `≡` symbol in laws to denote equivalence.
+мы используем символ `≡` в правилах для обозначения эквивалентности.
 
 
-## Algebras
+## Алгебры
 
-An algebra is a set of values (type instances, and other values), a set of operators
-(type methods) that it is closed under and some laws it must obey.
+Алгебра представляет собой набор значений(экземпляров типа и других значений), набор операторов(методов типа), которые зависимы и должны подчиняться некоторым правилам.
 
-Each algebra is a separate specification.
-An algebra may have dependencies on other algebras which must be implemented.
+Каждая алгебра — это отдельная спецификация. Алгебра может иметь зависимости от реализаций других алгебр.
 
-An algebra may also state other algebra methods which can be derived from new methods.
-If a type provides a method which could be derived, its behaviour must be equivalent
-to that of the derivation (or derivations).
+Алгебра также может содержать дргие методы алгебр, которые могут быть получены из новых методов. Если тип имеет метод, который может быть получен, его поведение должно быть эквивалентно тому, из которого он получен.
 
 * [Setoid](#setoid)
 * [Semigroup](#semigroup)
@@ -138,76 +132,76 @@ to that of the derivation (or derivations).
 
 ## Setoid
 
-#### Methods
+#### Методы
 
   1. `equals :: Setoid s => Type s ~> (s, s) → Boolean`
 
-#### Laws
+#### Правила
 
-  1. Reflexivity: `S.equals(a, a) === true`
-  1. Symmetry: `S.equals(a, b) === S.equals(b, a)`
-  1. Transitivity: if `S.equals(a, b)` and `S.equals(b, c)`, then `S.equals(a, c)`
+  1. Рефлексивность: `S.equals(a, a) === true`
+  1. Симметрия: `S.equals(a, b) === S.equals(b, a)`
+  1. Транзитивность: если `S.equals(a, b)` и `S.equals(b, c)`, тогда `S.equals(a, c)`
 
 
 
 ## Semigroup
 
-#### Methods
+#### Методы
 
   1. `concat :: Semigroup s => Type s ~> (s, s) → s`
 
-#### Laws
+#### Правила
 
-  1. Associativity: `S.concat(S.concat(a, b), c) ≡ S.concat(a, S.concat(b, c))`
+  1. Ассоциативность: `S.concat(S.concat(a, b), c) ≡ S.concat(a, S.concat(b, c))`
 
 
 
 ## Monoid
 
-#### Dependencies
+#### Зависимости
 
   1. Semigroup
 
-#### Methods
+#### Методы
 
   1. `empty :: Monoid m => Type m ~> () → m`
 
-#### Laws
+#### Правила
 
-  1. Right identity: `M.concat(a, M.empty()) ≡ a`
-  1. Left identity: `M.concat(M.empty(), a) ≡ a`
+  1. Точный справа: `M.concat(a, M.empty()) ≡ a`
+  1. Точный слева: `M.concat(M.empty(), a) ≡ a`
 
 
 
 ## Functor
 
-#### Methods
+#### Методы
 
   1. `map :: Functor f => Type f ~> (a → b, f a) → f b`
 
-#### Laws
+#### Правила
 
-  1. Identity: `F.map(x => x, a) ≡ a`
-  1. Composition: `F.map(x => f(g(x)), a) ≡ F.map(f, F.map(g, a))`
+  1. Точный: `F.map(x => x, a) ≡ a`
+  1. Композиция: `F.map(x => f(g(x)), a) ≡ F.map(f, F.map(g, a))`
 
 
 
 ## Bifunctor
 
-#### Dependencies
+#### Зависимости
 
   1. Functor
 
-#### Methods
+#### Методы
 
   1. `bimap :: Bifunctor f => Type f ~> (a → b, c → d, f a c) → f b d`
 
-#### Laws
+#### Правила
 
-  1. Identity: `B.bimap(x => x, x => x, a) ≡ a`
-  1. Composition: `B.bimap(x => f(g(x)), x => h(i(x)), a) ≡ B.bimap(f, h, B.bimap(g, i, a))`
+  1. Точный: `B.bimap(x => x, x => x, a) ≡ a`
+  1. Композиция: `B.bimap(x => f(g(x)), x => h(i(x)), a) ≡ B.bimap(f, h, B.bimap(g, i, a))`
 
-#### Can be derived
+#### Может быть получен
 
   1. Functor's map: `A.map = (f, u) => A.bimap(x => x, f, u)`
 
@@ -215,32 +209,32 @@ to that of the derivation (or derivations).
 
 ## Contravariant
 
-#### Methods
+#### Методы
 
   1. `contramap :: Contravariant f => Type f ~> (a → b, f b) → f a`
 
-#### Laws
+#### Правила
 
-  1. Identity: `F.contramap(x => x, a) ≡ a`
-  1. Composition: `F.contramap(x => f(g(x)), a) ≡ F.contramap(g, F.contramap(f, a))`
+  1. Точный: `F.contramap(x => x, a) ≡ a`
+  1. Композиция: `F.contramap(x => f(g(x)), a) ≡ F.contramap(g, F.contramap(f, a))`
 
 
 ## Profunctor
 
-#### Dependencies
+#### Зависимости
 
   1. Functor
 
-#### Methods
+#### Методы
 
   1. `promap :: Profunctor f => Type f ~> (a → b, c → d, f b c) → f a d`
 
-#### Laws
+#### Правила
 
-  1. Identity: `P.promap(x => x, x => x, a) ≡ a`
-  1. Composition: `P.promap(x => f(g(x)), x => h(i(x)), a) ≡ P.promap(g, h, P.promap(f, i, a))`
+  1. Точный: `P.promap(x => x, x => x, a) ≡ a`
+  1. Композиция: `P.promap(x => f(g(x)), x => h(i(x)), a) ≡ P.promap(g, h, P.promap(f, i, a))`
 
-#### Can be derived
+#### Может быть получен
 
   1. Functor's map: `A.map = (f, u) => A.promap(x => x, f, u)`
 
@@ -248,37 +242,37 @@ to that of the derivation (or derivations).
 
 ## Apply
 
-#### Dependencies
+#### Зависимости
 
   1. Functor
 
-#### Methods
+#### Методы
 
   1. `ap :: Apply f => Type f ~> (f (a → b), f a) → f b`
 
-#### Laws
+#### Правила
 
-  1. Composition: `A.ap(A.ap(A.map(f => g => x => f(g(x)), a), u), v) ≡ A.ap(a, A.ap(u, v))`
+  1. Композиция: `A.ap(A.ap(A.map(f => g => x => f(g(x)), a), u), v) ≡ A.ap(a, A.ap(u, v))`
 
 
 
 ## Applicative
 
-#### Dependencies
+#### Зависимости
 
   1. Apply
 
-#### Methods
+#### Методы
 
   1. `of :: Applicative f => Type f ~> a → f a`
 
-#### Laws
+#### Правила
 
-  1. Identity: `A.ap(A.of(x => x), v) ≡ v`
-  1. Homomorphism: `A.ap(A.of(f), A.of(x)) ≡ A.of(f(x))`
-  1. Interchange: `A.ap(u, A.of(y)) ≡ A.ap(A.of(f => f(y)), u)`
+  1. Точный: `A.ap(A.of(x => x), v) ≡ v`
+  1. Гомоморфизм: `A.ap(A.of(f), A.of(x)) ≡ A.of(f(x))`
+  1. Перестановка: `A.ap(u, A.of(y)) ≡ A.ap(A.of(f => f(y)), u)`
 
-#### Can be derived
+#### Может быть получен
 
   1. Functor's map: `A.map = (f, u) => A.ap(A.of(f), u)`
 
@@ -286,68 +280,68 @@ to that of the derivation (or derivations).
 
 ## Alt
 
-#### Dependencies
+#### Зависимости
 
   1. Functor
 
-#### Methods
+#### Методы
 
   1. `alt :: Alt f => Type f ~> (f a, f a) → f a`
 
-#### Laws
+#### Правила
 
-  1. Associativity: `A.alt(A.alt(a, b), c) ≡ A.alt(a, A.alt(b, c))`
-  2. Distributivity: `A.map(f, A.alt(a, b)) ≡ A.alt(A.map(f, a), A.map(f, b))`
+  1. Ассоциативность: `A.alt(A.alt(a, b), c) ≡ A.alt(a, A.alt(b, c))`
+  2. Распределённость: `A.map(f, A.alt(a, b)) ≡ A.alt(A.map(f, a), A.map(f, b))`
 
 
 
 ## Plus
 
-#### Dependencies
+#### Зависимости
 
   1. Alt
 
-#### Methods
+#### Методы
 
   1. `zero :: Plus f => Type f ~> () → f a`
 
-#### Laws
+#### Правила
 
-  1. Right identity: `P.alt(a, P.zero()) ≡ a`
-  2. Left identity: `P.alt(P.zero(), a) ≡ a`
-  3. Annihilation: `P.map(f, P.zero()) ≡ P.zero()`
+  1. Точный справа: `P.alt(a, P.zero()) ≡ a`
+  2. Точный слева: `P.alt(P.zero(), a) ≡ a`
+  3. Упразднение: `P.map(f, P.zero()) ≡ P.zero()`
 
 
 
 ## Alternative
 
-#### Dependencies
+#### Зависимости
 
   1. Applicative
   2. Plus
 
-#### Laws
+#### Методы
 
-  1. Distributivity: `A.ap(A.alt(a, b), c) ≡ A.alt(A.ap(a, c), A.ap(b, c))`
-  2. Annihilation: `A.ap(A.zero(), a) ≡ A.zero()`
+  1. Распределённость: `A.ap(A.alt(a, b), c) ≡ A.alt(A.ap(a, c), A.ap(b, c))`
+  2. Упразднение: `A.ap(A.zero(), a) ≡ A.zero()`
 
 
 
 ## Chain
 
-#### Dependencies
+#### Зависимости
 
   1. Apply
 
-#### Methods
+#### Методы
 
   1. `chain :: Chain m => Type m ~> (a → m b, m a) → m b`
 
-#### Laws
+#### Правила
 
-  1. Associativity: `M.chain(g, M.chain(f, u)) ≡ M.chain(x => M.chain(g, f(x)), u)`
+  1. Ассоциативность: `M.chain(g, M.chain(f, u)) ≡ M.chain(x => M.chain(g, f(x)), u)`
 
-#### Can be derived
+#### Может быть получен
 
   1. Apply's ap: `A.ap = (uf, ux) => A.chain(f => A.map(f, ux), uf)`
 
@@ -355,34 +349,34 @@ to that of the derivation (or derivations).
 
 ## ChainRec
 
-#### Dependencies
+#### Зависимости
 
   1. Chain
 
-#### Methods
+#### Методы
 
   1. `chainRec :: ChainRec m => Type m ~> ((a → c, b → c, a) → m c, a) → m b`
 
-#### Laws
+#### Правила
 
-  1. Equivalence: `C.chainRec((next, done, v) => p(v) ? C.map(done, d(v)) : C.map(next, n(v)), i) ≡ (function step(v) { return p(v) ? d(v) : C.chain(step, n(v)) }(i))`
-  2. Stack usage of `C.chainRec(f, i)` must be at most a constant multiple of the stack usage of `f` itself.
+  1. Эквивалентность: `C.chainRec((next, done, v) => p(v) ? C.map(done, d(v)) : C.map(next, n(v)), i) ≡ (function step(v) { return p(v) ? d(v) : C.chain(step, n(v)) }(i))`
+  2. Использование `C.chainRec(f, i)` должно быть максимально подобным самостоятельному вызову `f`.
 
 
 
 ## Monad
 
-#### Dependencies
+#### Зависимости
 
   1. Applicative
   1. Chain
 
-#### Laws
+#### Правила
 
-  1. Left identity: `M.chain(f, M.of(a)) ≡ f(a)`
-  1. Right identity: `M.chain(M.of, u) ≡ u`
+  1. Точный слева: `M.chain(f, M.of(a)) ≡ f(a)`
+  1. Точный справа: `M.chain(M.of, u) ≡ u`
 
-#### Can be derived
+#### Может быть получен
 
   1. Functor's map: `A.map = (f, u) => A.chain(x => A.of(f(x)), u)`
 
@@ -391,11 +385,11 @@ to that of the derivation (or derivations).
 
 ## Foldable
 
-#### Methods
+#### Методы
 
   1. `reduce :: Foldable f => Type f ~> ((a, b) → a, a, f b) → a`
 
-#### Laws
+#### Правила
 
   1. `F.reduce ≡ (f, x, u) => F.reduce((acc, y) => acc.concat([y]), [], u).reduce(f, x)`
 
@@ -403,11 +397,11 @@ to that of the derivation (or derivations).
 
 ## Extend
 
-#### Methods
+#### Методы
 
   1. `extend :: Extend e => Type e ~> (e a → b, e a) → e b`
 
-#### Laws
+#### Правила
 
   1. Associativity: `E.extend(f, E.extend(g, w)) ≡ E.extend(_w => f(E.extend(g, _w)), w)`
 
@@ -415,16 +409,16 @@ to that of the derivation (or derivations).
 
 ## Comonad
 
-#### Dependencies
+#### Зависимости
 
   1. Functor
   1. Extend
 
-#### Methods
+#### Методы
 
   1. `extract :: Comonad c => Type c ~> c a → a`
 
-#### Laws
+#### Правила
 
   1. `C.extend(C.extract, w) ≡ w`
   1. `C.extract(C.extend(f, w)) ≡ f(w)`
@@ -434,20 +428,20 @@ to that of the derivation (or derivations).
 
 ## Traversable
 
-#### Dependencies
+#### Зависимости
 
   1. Functor
   1. Foldable
 
-#### Methods
+#### Методы
 
   1. `traverse :: (Traversable t, Applicative f) => Type t ~> (Type f, (a → f b), t a) → f (t b)`
 
-#### Laws
+#### Правила
 
-  1. Naturality: `f(T.traverse(A, x => x, u)) ≡ T.traverse(B, f, u)` for any `f` such that `B.map(g, f(a)) ≡ f(A.map(g, a))`
-  2. Identity: `T.traverse(F, F.of, u) ≡ F.of(u)` for any Applicative `F`
-  3. Composition: `T.traverse(ComposeAB, x => x, u) ≡ A.map(v => T.traverse(B, x => x, v), T.traverse(A, x => x, u))` for `ComposeAB` defined bellow and for any Applicatives `A` and `B`
+  1. Нормализованность: `f(T.traverse(A, x => x, u)) ≡ T.traverse(B, f, u)` для любого `f` такого что `B.map(g, f(a)) ≡ f(A.map(g, a))`
+  2. Точный: `T.traverse(F, F.of, u) ≡ F.of(u)` для любого Applicative `F`
+  3. Композиция: `T.traverse(ComposeAB, x => x, u) ≡ A.map(v => T.traverse(B, x => x, v), T.traverse(A, x => x, u))` для `ComposeAB` определённого ниже и для любого Applicatives `A` и `B`
 
 ```js
 const ComposeAB = {
@@ -467,7 +461,7 @@ const ComposeAB = {
 }
 ```
 
-#### Can be derived
+#### Может быть получен
 
   1. Foldable's reduce:
 
