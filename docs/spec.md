@@ -463,24 +463,24 @@ const ComposeAB = {
 
 #### Может быть получен
 
-  1. Foldable's reduce:
+  1. `reduce` метод Foldable:
 
-    ```js
-    F.reduce = (f, acc, u) => {
-      const of = () => acc
-      const map = (_, x) => x
-      const ap = f
-      return F.traverse({of, map, ap}, x => x, u)
-    }
-    ```
+```js
+F.reduce = (f, acc, u) => {
+  const of = () => acc
+  const map = (_, x) => x
+  const ap = f
+  return F.traverse({of, map, ap}, x => x, u)
+}
+```
 
-  2. Functor's map:
+  2. `map` метод Functor:
 
-    ```js
-    F.map = (f, u) => {
-      const of = (x) => x
-      const map = (f, a) => f(a)
-      const ap = (f, a) => f(a)
-      return F.traverse({of, map, ap}, f, u)
-    }
-    ```
+```js
+F.map = (f, u) => {
+  const of = (x) => x
+  const map = (f, a) => f(a)
+  const ap = (f, a) => f(a)
+  return F.traverse({of, map, ap}, f, u)
+}
+```
