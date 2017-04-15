@@ -1,81 +1,67 @@
-# Static Land Specification
+# Спецификация Static Land
 
-This is a specification for common algebraic types in JavaScript based on
-[Fantasy Land Specification](https://github.com/fantasyland/fantasy-land).
+Это спецификация для общих алгебраических типов в JavaScript на основе [спецификации Fantasy Land](https://github.com/devSchacht/fantasy-land).
 
 
-## Type
+## Тип
 
-A type in Static Land is a dictionary (JavaScript object) with static functions as values.
-'Static' means that functions don't use `this`, they can be detached from the type object.
-The type object is just a container for functions.
+Тип в Static Land это словарь (JavaScript объект) со статическими функциями в качестве значений. 'Статический' означает что функции не используют `this`, они могут быть убраны у объекта типа. Объект типа просто контейнер для функций.
 
 ```js
 const {of, map} = MyType
 
-// This should work
+// Должно работать
 map(x => x + 1, of(41)) // MyType(42)
 ```
 
-Functions from type object are often called "methods" of the type.
-But keep in mind that they are not "methods" in JS sense (they don't use `this`).
-
-## Type signatures
-
-Each method in this spec comes with a type signature, that looks like the following.
-
-```
-map :: Functor f => Type f ~> (a → b, f a) → f b
-```
-
-We use syntax similar to Haskell's. You can learn about it from
-[Ramda's wiki](https://github.com/ramda/ramda/wiki/Type-Signatures) or from the book
-["Professor Frisby's Mostly Adequate Guide to Functional Programming"](https://drboolean.gitbooks.io/mostly-adequate-guide/content/ch7.html).
-
-This spec uses the following extensions to the type signature syntax:
-
-  1. `(a, b) → c` denotes a binary function which is not curried. Same for more arguments.
-  1. `Type a` denotes the [type dictionary](#type) of the type `a`.
-     For instance a function with a signature `(Type f, f a) → f a` can be called as `fn(F, F.of(1))`.
-  1. `~>` denotes a property access on a JavaScript object.
-     For example `fn :: Type f ~> (f a) → f a` can be applied as `F.fn(F.of(1))`.
-
-If a method called with incorrect types the behaviour is unspecified.
-Also if a method accepts a function it must only apply the function in accordance with
-the type signature (i.e. provide the correct number of arguments of the correct types).
+Функции из объекта типа часто называются "методами" типа. Но запомните что они не методы в JS представлении (они не используют `this`).
 
 
-## Parametricity
+## Описание типа
 
-All methods' implementations should only use type information about arguments that is known from the
-methods' type signatures. It's not allowed to inspect arguments or values that they produce
-or contain to get more information about their types. In other words methods
-should be [parametrically polymorphic](https://en.wikipedia.org/wiki/Parametric_polymorphism).
-
-For example let's take a look at Functor's `map` signature:
+Каждый метод в этой спецификации имеет описание типа, оно выглядит так.
 
 ```
 map :: Functor f => Type f ~> (a → b, f a) → f b
 ```
 
-There are three type variables in it: `f`, `a`, and `b`. Also we have some restrictions:
+Мы используем синтаксис похожий на Хаскель. Вы можете узнать о нём отсюда [Ramda's wiki](https://github.com/ramda/ramda/wiki/Type-Signatures) или из книги ["Professor Frisby's Mostly Adequate Guide to Functional Programming"](https://drboolean.gitbooks.io/mostly-adequate-guide/content/ch7.html).
 
-  1. `Functor f` says that `f a` is a value of a Functor.
-  2. `Type f ~>` means that we're writing implementation of `map`
-     for a [type dictionary](#type) `Type f`. In this case we know what specific
-     types `Type f` works with, so we know everything about `f`.
+Эта спецификация использует расширения для синтаксиса описания типов:
 
-We don't have any restrictions for types `a` and `b`, so we don't know anything about them.
-And we're not allowed to inspect them.
+  1. `(a, b) → c` обозначает булеву функцию, которая не каррирована. Тоже самое для большего числа аргументов.
+  2. `Type a` обозначает [типизированный словарь](#Тип) типа `a`.
+     Например, функция с описанием `(Type f, f a) → f a` может быть вызвана так `fn(F, F.of(1))`.
+  3. `~>` обозначает доступ к свойствам JavaScript объекта.
+     Например, `fn :: Type f ~> (f a) → f a` может быть применена так `F.fn(F.of(1))`.
 
-Here's an implementation of Maybe that
-violates parametricity requirement although fits into type signatures otherwise:
+Если метод вызывается с неправильными типами, поведение неопределено. Также, если метод принимает функцию, он должен применять функцию только в соответствии с описанием типа, т.е. обеспечивать правильное количество аргументов и правильные типы.
+
+
+## Параметризация
+
+Все реализации методов должны использовать только информацию о типе аргумента, изветсную из описания типа метода. не разрешено проверять аргументы или значения, которые они возвращают или содержат для получения большей информации о их типах. Другими словами методы должны быть [параматрически полиморфны](https://ru.wikipedia.org/wiki/Параметрический_полиморфизм).
+
+Например, давайте рассмотрим описание метода функтора `map`:
+
+```
+map :: Functor f => Type f ~> (a → b, f a) → f b
+```
+
+В нём есть три типа переменных: `f`, `a`, and `b`. Также у нас есть некоторые ограничения:
+
+  1. `Functor f` говорит что `f a` — значение Functor.
+  2. `Type f ~>` означает, что мы пишем реализацию `map` для [типизированного словаря](#Тип) `Type f`. В этом случае мы знаем, что определенный тип `Type f` работает с методом, поэтому мы знаем все о `f`.
+
+У нас нет никаких ограничений для типов `a` и `b`, так что мы ничего не знаем о них. И нам нельзя проверять их.
+
+Вот реализация Maybe, которая нарушает требование параметризации, хотя вписывается в описание типа: 
 
 ```js
 Maybe.Nothing = {type: 'Nothing'}
 
 Maybe.of = x => {
-  if (x === undefined) { // inspection is not allowed
+  if (x === undefined) { // проверка неразрешена
     return Maybe.Nothing
   }
   return {type: 'Just', value: x}
@@ -83,7 +69,7 @@ Maybe.of = x => {
 
 Maybe.map = (f, v) => {
 
-  // this is a legitimate inspection of `f a` because we know structure of `f`
+  // это законная проверка `f a`, потому что мызнаем структуру `f`
   if (v.type === 'Nothing') {
     return v
   }
@@ -91,7 +77,7 @@ Maybe.map = (f, v) => {
   const a = v.value
   const b = f(a)
 
-  if (b === undefined) { // inspection is not allowed
+  if (b === undefined) { // проверка неразрешена
     return Maybe.Nothing
   }
 
